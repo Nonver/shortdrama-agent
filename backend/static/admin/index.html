@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI 短剧剧本 · 管理后台</title>
+<link rel="stylesheet" href="/static/admin/style.css" />
+</head>
+<body>
+
+<!-- 登录 -->
+<section id="login" class="login-card card">
+  <div style="font-weight:700;font-size:18px;margin-bottom:14px">后台管理登录（仅 admin 账号）</div>
+  <input class="input" id="a-account" placeholder="管理员用户名 / 手机号" />
+  <input class="input" id="a-pass" type="password" placeholder="密码" />
+  <div class="row">
+    <input class="input" id="a-code" placeholder="验证码" style="margin-bottom:8px" />
+    <img class="captcha-img" id="a-captcha-img" onclick="loadAdminCaptcha()" title="点击刷新" />
+  </div>
+  <div class="err" id="a-err"></div>
+  <button class="btn" onclick="adminLogin()">登录后台</button>
+  <div class="pill" style="margin-top:10px;color:#8a9099">默认超管：admin（初始口令见部署说明，首登请改密）</div>
+</section>
+
+<!-- 主体 -->
+<section id="dash" class="layout hidden">
+  <div class="side">
+    <div class="logo">
+      <span class="mark">
+        <svg viewBox="0 0 32 32" width="18" height="18" aria-hidden="true">
+          <defs>
+            <linearGradient id="sdGrad" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#6366f1"/>
+              <stop offset="1" stop-color="#4f46e5"/>
+            </linearGradient>
+          </defs>
+          <path d="M12 9.5v13l11-6.5-11-6.5z" fill="url(#sdGrad)"/>
+        </svg>
+      </span>
+      <span class="name">AI 短剧 · 后台</span>
+    </div>
+    <!-- 一级菜单：统一视觉重量（单 path/最简结构 + stroke=2 + currentColor 跟随文字色） -->
+    <div class="item active" data-tab="dashboard" onclick="switchTab('dashboard')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg></span>数据驾驶舱</div>
+    <div class="item" data-tab="users" onclick="switchTab('users')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>用户分群</div>
+    <div class="item" data-tab="scripts" onclick="switchTab('scripts')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></span>剧本库</div>
+    <div class="nav-group" id="nav-kb">
+      <div class="item nav-head" data-tab="knowledge" onclick="toggleKbTree()">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 11v6c0 1.7 4 3 9 3s9-1.3 9-3v-6"/></svg></span>知识中枢<span class="chev" id="kb-chev">›</span>
+      </div>
+      <div class="nav-sub" id="kb-platforms"></div>
+    </div>
+    <div class="item" data-tab="agents" onclick="switchTab('agents')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 21v-1a6 6 0 0112 0v1"/></svg></span>Agent 矩阵</div>
+    <div class="item" data-tab="models" onclick="switchTab('models')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="6" rx="2"/><circle cx="9" cy="12" r="0.6" fill="currentColor"/><circle cx="15" cy="12" r="0.6" fill="currentColor"/></svg></span>模型中心</div>
+    <div class="item" data-tab="membership" onclick="switchTab('membership')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l6 6 6-6v6l-6 6-6-6V3zM6 9l6 6 6-6"/></svg></span>会员与权益</div>
+    <div class="item exit" onclick="adminLogout()"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg></span>退出登录</div>
+  </div>
+  <div class="main">
+    <div class="topbar"><h2 id="title">仪表盘</h2></div>
+
+    <div class="view" id="view-dashboard">
+      <div class="stats" id="stats"></div>
+      <div class="card chart-toolbar">
+        <span class="pill">图表时间范围：</span>
+        <button class="btn slim" id="dr-7" onclick="setChartDays(7)">近 7 天</button>
+        <button class="btn slim" id="dr-14" onclick="setChartDays(14)">近 14 天</button>
+        <button class="btn slim" id="dr-30" onclick="setChartDays(30)">近 30 天</button>
+        <button class="btn slim" id="dr-90" onclick="setChartDays(90)">近 90 天</button>
+        <span class="pill muted" id="dr-hint"></span>
+      </div>
+      <div id="charts" class="charts"></div>
+      <div class="card"><h3>最近操作审计</h3><div id="audit-feed" class="audit-feed"></div></div>
+      <div class="card pill">系统运行状态：用户端 H5、后台、生成引擎、知识中枢均已就绪。模型默认本地兜底（规则+知识中枢），填入方舟 API Key 即切换真实生成。</div>
+    </div>
+
+    <div class="view hidden" id="view-users">
+      <div class="row" style="margin-bottom:10px"><button class="btn" onclick="openAddUser()">+ 添加用户</button></div>
+      <div class="card"><table><thead><tr><th>ID</th><th>用户名</th><th>昵称</th><th>手机</th><th>类型</th><th>等级</th><th>状态</th><th>标签</th><th>操作</th></tr></thead><tbody id="users-tbody"></tbody></table></div>
+    </div>
+
+    <div class="view hidden" id="view-scripts">
+      <div class="card"><div class="row">
+        <select id="s-platform" class="input" style="max-width:160px" onchange="loadScripts()"><option value="">全部平台</option><option value="douyin">抖音</option><option value="hongguo">红果</option><option value="kuaishou">快手</option></select>
+        <select id="s-agent" class="input" style="max-width:160px" onchange="loadScripts()"><option value="">全部Agent</option><option value="director">总导演</option><option value="writer">编剧</option><option value="cameraman">分镜导演</option><option value="narration">旁白心理</option><option value="reviewer">审核</option></select>
+        <input id="s-creator" class="input" placeholder="按生成账号筛选" style="max-width:160px" oninput="loadScripts()" />
+      </div></div>
+      <div class="card"><table><thead><tr><th>ID</th><th>标题</th><th>平台</th><th>类型</th><th>Agent</th><th>生成账号</th><th>集数</th><th>状态</th><th>操作</th></tr></thead><tbody id="scripts-tbody"></tbody></table></div>
+    </div>
+
+    <div class="view hidden" id="view-knowledge">
+      <div class="card">
+        <div class="kb-crumb" id="kb-crumb">请从左侧「知识库 › 平台 › 子库」选择要查看的内容</div>
+        <button class="btn slim" onclick="openKbModal(null)">＋ 新增知识条目</button>
+      </div>
+      <div class="card"><table><thead><tr><th>ID</th><th>标题</th><th>子库</th><th>标签</th><th>来源</th><th>操作</th></tr></thead><tbody id="kb-tbody"></tbody></table></div>
+    </div>
+
+    <div class="view hidden" id="view-agents">
+      <div class="card"><button class="btn slim" onclick="openAgentModal(null)">＋ 新增 Agent</button></div>
+      <div id="agents-box"></div>
+    </div>
+
+    <div class="view hidden" id="view-models">
+      <div class="card"><div class="kb-l1" id="model-groups"></div>
+        <button class="btn slim" onclick="openModelModal(null)">＋ 新增模型配置</button></div>
+      <div id="models-box"></div>
+    </div>
+
+    <div class="view hidden" id="view-membership">
+      <div class="card">
+        <h3>会员档位与权限</h3>
+        <div id="mb-plans" class="pill"></div>
+        <h3 style="margin-top:14px">权限阈值（各功能最低开放档位）</h3>
+        <div id="mb-features"></div>
+        <h3 style="margin-top:14px">开关与配额</h3>
+        <div class="row">
+          <label class="pill">4K 生图开启 <input type="checkbox" id="mb-4k" /></label>
+          <label class="pill">图角标 <input type="checkbox" id="mb-badge" /></label>
+          <label class="pill">隐式水印 <input type="checkbox" id="mb-implicit" /></label>
+        </div>
+        <div class="row">
+          <span class="pill">免费每日生成配额</span>
+          <input class="input" id="mb-quota" type="number" style="max-width:120px" />
+        </div>
+        <div class="row">
+          <span class="pill">角标文案</span>
+          <input class="input" id="mb-badge-text" />
+        </div>
+        <button class="btn slim" onclick="saveMembership()">保存会员配置</button>
+        <div class="err" id="mb-err"></div>
+      </div>
+      <div class="card">
+        <h3>用户升级（设会员等级）</h3>
+        <table><thead><tr><th>ID</th><th>用户名</th><th>当前等级</th><th>设为</th><th>操作</th></tr></thead><tbody id="mb-users"></tbody></table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 编辑用户画像 -->
+<div id="modal-user" class="modal-mask hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="modal"><h3>编辑用户画像</h3>
+    <input type="hidden" id="eu-id" />
+    <input class="input" id="eu-nick" placeholder="昵称" />
+    <input class="input" id="eu-avatar" placeholder="头像URL/路径" />
+    <select id="eu-status" class="input"><option value="active">active</option><option value="disabled">disabled</option></select>
+    <select id="eu-level" class="input"><option value="free">免费</option><option value="member">会员</option><option value="pro">会员Pro</option></select>
+    <input class="input" id="eu-tags" placeholder="标签（用、分隔）" />
+    <textarea class="input" id="eu-habits" rows="4" placeholder="习惯 JSON"></textarea>
+    <div class="err" id="eu-err"></div>
+    <button class="btn" onclick="saveUser()">保存</button>
+    <button class="btn ghost" onclick="el('modal-user').classList.add('hidden')">取消</button>
+  </div>
+</div>
+
+<!-- 添加用户 -->
+<div id="modal-add-user" class="modal-mask hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="modal"><h3>添加用户</h3>
+    <input class="input" id="au-username" placeholder="用户名（必填）" />
+    <input class="input" id="au-password" type="password" placeholder="密码（至少6位，必填）" />
+    <input class="input" id="au-phone" placeholder="手机号（可选）" />
+    <input class="input" id="au-nick" placeholder="昵称（可选）" />
+    <select id="au-type" class="input"><option value="user">普通用户</option><option value="admin">管理员</option></select>
+    <select id="au-level" class="input"><option value="free">免费</option><option value="member">会员</option><option value="pro">会员Pro</option></select>
+    <select id="au-status" class="input"><option value="active">active</option><option value="disabled">disabled</option></select>
+    <div class="err" id="au-err"></div>
+    <button class="btn" onclick="addUser()">创建</button>
+    <button class="btn ghost" onclick="el('modal-add-user').classList.add('hidden')">取消</button>
+  </div>
+</div>
+
+<!-- 查看剧本 -->
+<div id="modal-script" class="modal-mask hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="modal"><h3>剧本内容</h3><pre class="pre" id="vs-content"></pre>
+    <button class="btn ghost" onclick="el('modal-script').classList.add('hidden')">关闭</button></div>
+</div>
+
+<!-- 知识库编辑 -->
+<div id="modal-kb" class="modal-mask hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="modal"><h3 id="kb-modal-title">知识库条目</h3>
+    <input type="hidden" id="kb-id" />
+    <div class="row">
+      <select id="kb-platform" class="input"><option value="hongguo">红果</option><option value="douyin">抖音</option><option value="kuaishou">快手</option><option value="general">通用</option></select>
+      <select id="kb-sub" class="input"><option value="platform">平台规则库</option><option value="genre">类型套路库</option><option value="style">风格样本库</option><option value="asset">剧本资产库</option></select>
+    </div>
+    <input class="input" id="kb-title" placeholder="标题" />
+    <textarea class="input" id="kb-content" rows="6" placeholder="内容"></textarea>
+    <input class="input" id="kb-tags" placeholder="标签（用、分隔）" />
+    <input class="input" id="kb-source" placeholder="来源（用于对外展示专业度）" />
+    <div class="err" id="kb-err"></div>
+    <button class="btn" onclick="saveKB()">保存</button>
+    <button class="btn ghost" onclick="el('modal-kb').classList.add('hidden')">取消</button>
+  </div>
+</div>
+
+<!-- Agent 编辑 -->
+<div id="modal-agent" class="modal-mask hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="modal"><h3 id="agent-modal-title">Agent</h3>
+    <input type="hidden" id="ag-id" />
+    <input class="input" id="ag-key" placeholder="key（英文，如 director，创建后不可改）" />
+    <input class="input" id="ag-name" placeholder="名称（如 总导演）" />
+    <input class="input" id="ag-persona_name" placeholder="人设名（如 国家级总导演）" />
+    <input class="input" id="ag-description" placeholder="一句话简介" />
+    <textarea class="input" id="ag-persona" rows="3" placeholder="人设描述"></textarea>
+    <textarea class="input" id="ag-system_prompt" rows="5" placeholder="系统提示词（真正生效）"></textarea>
+    <div class="field-label">可用工具</div>
+    <div class="chips" id="ag-tools-box"></div>
+    <input type="hidden" id="ag-tools" />
+    <div class="field-label">绑定模型（来自模型配置，可选）</div>
+    <select class="input" id="ag-bound_model"><option value="">不绑定（走默认兜底）</option></select>
+    <div class="field-label">头像（上传图片 / 填图片 URL / 或 emoji）</div>
+    <div class="row" style="align-items:center">
+      <span id="ag-avatar-preview" class="avatar-prev">🤖</span>
+      <input class="input" id="ag-avatar" placeholder="图片 URL 或 emoji（如 🎬）" oninput="updateAgentAvatarPreview()" />
+      <label class="btn slim" style="flex:0 0 auto;position:relative;overflow:hidden;cursor:pointer">
+        上传图片
+        <input type="file" id="ag-avatar-file" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer" onchange="uploadAgentAvatar()" />
+      </label>
+    </div>
+    <textarea class="input" id="ag-example" rows="3" placeholder="示例对话 JSON（可选）"></textarea>
+    <label class="pill">启用 <input type="checkbox" id="ag-enabled" checked /></label>
+    <div class="err" id="ag-err"></div>
+    <button class="btn" onclick="saveAgent()">保存</button>
+    <button class="btn ghost" onclick="el('modal-agent').classList.add('hidden')">取消</button>
+  </div>
+</div>
+
+<!-- 模型配置新增/编辑 -->
+<div id="modal-model" class="modal-mask hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="modal"><h3 id="model-modal-title">新增模型配置</h3>
+    <input type="hidden" id="mm-id" />
+    <div class="row">
+      <select id="mm-group" class="input"><option value="ark_chat">方舟对话模型</option><option value="ark_image">方舟文生图</option><option value="ark_video">方舟文生视频</option><option value="tts">豆包语音(TTS)</option><option value="embedding">向量 Embedding</option><option value="fallback">本地兜底</option></select>
+      <input class="input" id="mm-role" placeholder="role（用途，如 chat/image）" />
+    </div>
+    <input class="input" id="mm-provider" placeholder="provider（如 ark/volc/self）" />
+    <input class="input" id="mm-model_name" placeholder="model_name（如 doubao-seed-2-1-pro）" />
+    <input class="input" id="mm-base_url" placeholder="base_url（可选）" />
+    <input class="input" id="mm-api_key" type="password" placeholder="API Key（可选）" />
+    <input class="input" id="mm-description" placeholder="说明（可选）" />
+    <label class="pill">启用 <input type="checkbox" id="mm-enabled" /></label>
+    <div class="err" id="mm-err"></div>
+    <button class="btn" onclick="saveModelModal()">保存</button>
+    <button class="btn ghost" onclick="el('modal-model').classList.add('hidden')">取消</button>
+  </div>
+</div>
+
+<script src="/static/admin/app.js"></script>
+</body>
+</html>

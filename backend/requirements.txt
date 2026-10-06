@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+python-jose[cryptography]
+pillow
+python-multipart
+python-docx
+openpyxl
+reportlab
+httpx
+pydantic-settings

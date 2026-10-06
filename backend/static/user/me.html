@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>我的 · AI 短剧导演组</title>
+<link rel="stylesheet" href="/static/user/style.css" />
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span>我的 <span class="sub">个人中心</span></span>
+    <span class="link" onclick="location.href='/'">← 首页</span>
+  </header>
+
+  <div class="content">
+    <!-- 资料卡 -->
+    <div class="card me-card">
+      <div class="me-avatar" id="me-avatar">👤</div>
+      <div class="me-meta">
+        <div class="me-name" id="me-name">未登录</div>
+        <div class="me-level" id="me-level"></div>
+      </div>
+    </div>
+
+    <!-- 资料编辑 -->
+    <div class="card" id="profile-card">
+      <div style="font-weight:700;margin-bottom:8px">资料设置</div>
+      <input class="input" id="pf-nick" placeholder="昵称" />
+      <input class="input" id="pf-tags" placeholder="偏好标签（用、分隔，如：逆袭、抖音）" />
+      <div class="pill">修改密码（可选）</div>
+      <input class="input" id="pf-oldpass" type="password" placeholder="原密码" />
+      <input class="input" id="pf-newpass" type="password" placeholder="新密码（≥6位）" />
+      <div class="err" id="pf-err"></div>
+      <button class="btn" onclick="saveProfile()">保存资料</button>
+    </div>
+
+    <!-- 会员状态 -->
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:8px">会员状态</div>
+      <div id="mb-status" class="pill">—</div>
+      <div class="pill" style="margin-top:6px">会员解锁：下载/导出、AI 生图、文生视频+配音等能力。</div>
+      <button class="btn ghost" onclick="toast('升级入口为演示占位，可在后台配置会员档位')">升级会员</button>
+    </div>
+
+    <!-- 我的剧本 -->
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:8px">我的剧本</div>
+      <div id="my-scripts"><div class="pill">加载中…</div></div>
+    </div>
+
+    <!-- 我的资产 -->
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:8px">我的资产（图 / 视频 / 配音）</div>
+      <div id="my-assets"><div class="pill">加载中…</div></div>
+    </div>
+
+    <button class="btn ghost" onclick="logout()">退出登录</button>
+  </div>
+
+  <!-- 登录现改为独立页 /login（见 common.js openAuth 跳转） -->
+
+</div>
+<script src="/static/user/common.js"></script>
+<script src="/static/user/me.js"></script>
+</body>
+</html>

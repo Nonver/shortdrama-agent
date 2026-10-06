@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>登录 / 注册 · AI 短剧导演组</title>
+<link rel="stylesheet" href="/static/user/style.css" />
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span>登录 / 注册 <span class="sub">AI 短剧导演组</span></span>
+    <span class="link" onclick="location.href='/'">返回首页</span>
+  </header>
+
+  <div class="content">
+    <div class="card" id="login-card">
+      <div class="section-title">登录</div>
+      <input class="input" id="login-account" placeholder="用户名 / 手机号" />
+      <input class="input" id="login-pass" type="password" placeholder="密码" />
+      <div class="captcha-row">
+        <input class="input" id="login-code" placeholder="验证码" style="margin-bottom:0" />
+        <img class="captcha-img" id="login-captcha-img" onclick="loadCaptcha('login')" title="点击刷新" />
+      </div>
+      <div class="err" id="login-err"></div>
+      <button class="btn" onclick="doLogin()">登录</button>
+      <div class="link" onclick="toggleAuth()">没有账号？去注册</div>
+    </div>
+
+    <div class="card hidden" id="reg-card">
+      <div class="section-title">注册</div>
+      <input class="input" id="reg-user" placeholder="用户名（4-20位）" />
+      <input class="input" id="reg-pass" type="password" placeholder="密码（≥6位）" />
+      <input class="input" id="reg-phone" placeholder="手机号（11位）" />
+      <div class="captcha-row">
+        <input class="input" id="reg-code" placeholder="验证码" style="margin-bottom:0" />
+        <img class="captcha-img" id="reg-captcha-img" onclick="loadCaptcha('reg')" title="点击刷新" />
+      </div>
+      <div class="err" id="reg-err"></div>
+      <button class="btn" onclick="doRegister()">注册并登录</button>
+      <div class="link" onclick="toggleAuth()">已有账号？去登录</div>
+    </div>
+
+    <div class="pill center">登录即同意服务协议，与 5 位导演组 Agent 对话出片</div>
+  </div>
+
+</div>
+<script src="/static/user/common.js"></script>
+<script src="/static/user/login.js"></script>
+</body>
+</html>

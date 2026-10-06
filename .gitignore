@@ -1,0 +1,91 @@
+# ============================================================
+# AI 短剧剧本生成 Agent · Git 忽略清单
+# ============================================================
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ---- 环境变量与密钥（严禁提交）----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# ---- 运行数据与产物 ----
+# 注意：只用锚定路径，避免误伤 backend/src/data 等源码目录
+/data/
+/logs/
+/backend/data/
+/backend/shots/
+/backend/static/uploads/
+/backend/static/assets/
+# 生成的图片 / 配音 / 视频（方舟与豆包语音产出，体积大且非源码）
+/static/assets/
+*.sqlite
+*.sqlite3
+*.db
+*.log
+
+# ---- 临时脚本与临时文件 ----
+_tmp_*
+*tmp_verify*
+*.zip
+*.rar
+*.7z
+
+# ---- 本地助手与项目记忆 ----
+.workbuddy/
+
+# ---- 编辑器 / 系统 ----
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ============================================================
+# 开源发布补充（2026-10-06 第二轮）：只发布干净源代码
+# ============================================================
+
+# ---- 开发方案与过程文档（只保留 README.md）----
+/TTS接入方案.md
+/复查报告.md
+/方案-意图识别与RAG升级-V1.md
+/方案-用户端聊天交互重构.md
+/方舟-豆包语音接入方案.md
+/日志.md
+
+# ---- 调试产物与登录令牌（含真实 JWT，务必排除）----
+/backend/token_*.txt
+/backend/browser_results.txt
+
+# ---- Windows 保留名残留 ----
+# backend/nul 是 `2>nul` 重定向产物。注意：该文件名在 Windows 上无法被 git 索引，
+# 必须忽略，否则 `git add -A` 会直接以 fatal 失败（实测 exit 128）。
+nul
+**/nul
+
+# ---- 一次性调试 / 自测脚本（非产品源码）----
+# backend 根目录下的下划线前缀脚本、探针、诊断与前端自测脚本，
+# 均为开发期临时工具，不随仓库发布
+/backend/_*.py
+/backend/test_*.py
+/backend/*_test*.py
+/backend/diag*.py
+/backend/voice_diag.py
+/backend/browser_test*.py
+/backend/*probe*.py
+/backend/captcha.png

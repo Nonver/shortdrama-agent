@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>AI 短剧剧本 · 导演组</title>
+<link rel="stylesheet" href="/static/user/style.css" />
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span>AI 短剧剧本 <span class="sub">国家级导演组</span></span>
+    <span id="auth-btn" class="link" onclick="openAuth()">登录 / 注册</span>
+    <span id="user-chip" class="chip hidden" onclick="goMe()"></span>
+  </header>
+
+  <div class="content">
+  <div id="view-home">
+    <!-- 英雄区 -->
+    <div class="hero">
+      <div class="hero-title">和 5 位导演组 Agent 对话，一句话出片</div>
+      <div class="hero-sub">总导演 · 编剧 · 分镜导演 · 旁白心理 · 合规审核 —— 每个都是可对话的智能体，数据互通、可相互召唤协作。</div>
+      <div class="hero-tags">
+        <span class="tag">🎬 流式对话</span>
+        <span class="tag">@召唤协作</span>
+        <span class="tag">📚 知识库驱动</span>
+      </div>
+    </div>
+
+    <!-- 5 个 Agent 入口 -->
+    <div class="section-title">选择你的智能体</div>
+    <div id="agent-grid" class="agent-grid"></div>
+
+    <!-- 快捷入口 -->
+    <div class="quick">
+      <div class="quick-card" onclick="openDemo()">
+        <div class="qc-ico">📖</div><div class="qc-t">示例剧本</div><div class="qc-s">免登录预览</div>
+      </div>
+      <div class="quick-card" onclick="goKnowledge()">
+        <div class="qc-ico">📖</div><div class="qc-t">资料库</div><div class="qc-s">爆款/变现/合规</div>
+      </div>
+      <div class="quick-card" onclick="goMe()">
+        <div class="qc-ico">👤</div><div class="qc-t">我的</div><div class="qc-s">剧本/资产</div>
+      </div>
+    </div>
+
+    <div class="pill center">点击下方任意智能体即可进入聊天窗口，输入需求即可生成专业剧本。</div>
+  </div><!-- /view-home -->
+
+    <!-- 资料库（对外公开：爆款拆解 / 变现地图 / 合规手册） -->
+    <div id="view-knowledge" class="hidden">
+      <div class="section-title">📖 资料库</div>
+      <div id="kb-crumb" class="kb-crumb">选择下方任意板块查看</div>
+      <div id="kb-cards" class="kb-cards"></div>
+      <div id="kb-list" class="kb-list"></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <div data-tab="home" class="active" onclick="switchTab('home')">首页</div>
+    <div data-tab="knowledge" onclick="switchTab('knowledge')">资料库</div>
+    <div data-tab="mine" onclick="switchTab('mine')">我的</div>
+  </div>
+
+  <!-- 登录现改为独立页 /login（见 common.js openAuth 跳转） -->
+
+  <!-- 示例剧本弹窗 -->
+  <div id="demo-modal" class="modal hidden" onclick="if(event.target===this)closeDemo()">
+    <div class="modal-box">
+      <div class="modal-head">
+        <span>示例剧本（知识库驱动 · 带来源）</span>
+        <span class="link" onclick="closeDemo()">关闭 ✕</span>
+      </div>
+      <select id="demo-sel" class="input" onchange="renderDemo()" style="margin:8px 16px;width:auto"></select>
+      <pre id="demo-body" class="demo-body"></pre>
+    </div>
+  </div>
+
+</div>
+<script src="/static/user/common.js"></script>
+<script src="/static/user/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Agent 聊天 · AI 短剧导演组</title>
+<link rel="stylesheet" href="/static/user/style.css" />
+</head>
+<body class="chat-body">
+<div class="chat-wrap">
+
+  <!-- 顶部栏 -->
+  <header class="chat-head">
+    <span class="back" onclick="location.href='/'">←</span>
+    <span id="agent-avatar" class="ch-avatar">🎬</span>
+    <span class="ch-info">
+      <span id="agent-name" class="ch-name">智能体</span>
+      <span id="agent-desc" class="ch-desc"></span>
+    </span>
+    <span class="ch-actions">
+      <span class="ch-btn" onclick="openGuide()" title="问 AI 向导">🤖</span>
+      <span class="ch-btn" onclick="toggleSessions()" title="会话列表">💬</span>
+      <span class="ch-btn" onclick="toggleContext()" title="跨Agent协作记忆">🧠</span>
+    </span>
+  </header>
+
+  <!-- 会话抽屉 -->
+  <div id="session-drawer" class="drawer hidden">
+    <div class="drawer-head">会话列表 <span class="link" onclick="toggleSessions()">收起</span></div>
+    <button class="btn ghost slim" onclick="newSession()">＋ 新建会话</button>
+    <div id="session-list" class="session-list"></div>
+  </div>
+
+  <!-- 跨Agent上下文 -->
+  <div id="context-panel" class="drawer hidden">
+    <div class="drawer-head">跨 Agent 协作记忆 <span class="link" onclick="toggleContext()">收起</span></div>
+    <div id="context-body" class="ctx-body pill">加载中…</div>
+  </div>
+
+  <!-- 消息区 -->
+  <div id="chat" class="chat-box"></div>
+
+  <!-- 输入区 -->
+  <div class="composer">
+    <div id="mention-chips" class="mention-chips"></div>
+    <div class="settings">
+      <select id="c-platform" class="mini">
+        <option value="douyin">抖音</option><option value="hongguo">红果</option><option value="kuaishou">快手</option>
+      </select>
+      <select id="c-genre" class="mini">
+        <option>逆袭</option><option>甜宠</option><option>悬疑</option><option>战神</option><option>搞笑</option><option>古装</option><option>穿越</option><option>职场</option>
+      </select>
+      <select id="c-episodes" class="mini"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+      <span class="at-btn" onclick="toggleMention()">@ 召唤</span>
+    </div>
+    <div id="mention-pop" class="mention-pop hidden"></div>
+    <div class="composer-row">
+      <textarea id="c-input" class="input" rows="2" placeholder="和智能体说需求，例如：写一部『被辞退外卖员逆袭成首富』的 3 集抖音短剧；或说『生成视频/配图/配音』、『优化一下』、『怎么过审』"></textarea>
+      <button id="c-send" class="btn send" onclick="send()">发送</button>
+    </div>
+  </div>
+
+  <!-- AI 向导答疑弹窗（用户不懂就问，解疑答惑） -->
+  <div id="guide-modal" class="modal hidden" onclick="if(event.target===this)closeGuide()">
+    <div class="modal-box dark" style="max-width:430px">
+      <div class="modal-head"><span>🤖 AI 向导 · 不懂就问</span><span class="link" onclick="closeGuide()">关闭 ✕</span></div>
+      <div style="padding:14px">
+        <div class="kb-guide-hint">问任何关于 AI 短剧的问题：选题 / 制作 / 平台 / 变现 / 合规 / 怎么用本平台…</div>
+        <div class="kb-guide-input"><input id="g-q" class="input" placeholder="例如：新手怎么用 AI 做一部短剧？" onkeydown="if(event.key==='Enter')askGuideAgent()" /><button class="btn send" onclick="askGuideAgent()">问向导</button></div>
+        <div id="g-ans" class="kb-guide-ans"></div>
+        <div class="kb-guide-sugs">
+          <span onclick="askGuideAgent('新手怎么用 AI 做一部短剧？')">新手怎么做</span>
+          <span onclick="askGuideAgent('选题怎么最容易爆？')">选题怎么爆</span>
+          <span onclick="askGuideAgent('怎么变现赚钱？')">怎么变现</span>
+          <span onclick="askGuideAgent('AIGC 要怎么标识才合规？')">AIGC 标识</span>
+          <span onclick="askGuideAgent('平台怎么选？')">平台怎么选</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 登录提示（未登录时遮罩输入） -->
+  <div id="login-hint" class="hidden"></div>
+</div>
+
+<script src="/static/user/common.js"></script>
+<script src="/static/user/agent.js"></script>
+</body>
+</html>
